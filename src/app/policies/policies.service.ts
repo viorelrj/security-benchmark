@@ -10,7 +10,7 @@ import { ReadyState } from '../core/ready-state';
 })
 export class PoliciesService {
   state = new ReadyState();
-  baseDir = './cache/audits';
+  baseDir: string;
 
   constructor(
     private fileService: FileService
@@ -20,6 +20,8 @@ export class PoliciesService {
 
   init(): void {
     this.fileService.state.promise.then(() => {
+      console.log(this.fileService.appDataDir);
+      this.baseDir = `${this.fileService.appDataDir}/policy-audits/policies`
       this.fileService.readDir(this.baseDir).pipe(
         catchError(() => of(
           this.fileService.makeDir(this.baseDir).subscribe(() => this.state.resolve())

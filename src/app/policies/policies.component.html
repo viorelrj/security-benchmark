@@ -1,4 +1,11 @@
-<input type="file" (change)="handleFileInput($event.target.files)">
+
+<div class="header">
+    <label class="button">
+        Import
+        <input type="file" (change)="handleFileInput($event.target.files)">
+    </label>
+    
+</div>
 <app-policies-list
     [filenames]="filenames"
 ></app-policies-list>

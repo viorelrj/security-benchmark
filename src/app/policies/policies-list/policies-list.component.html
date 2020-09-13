@@ -1,1 +1,4 @@
-<p *ngFor="let filename of filenames">{{filename}}</p>
+<app-policies-item
+    *ngFor="let filename of filenames"
+    [content]="filename">
+</app-policies-item>

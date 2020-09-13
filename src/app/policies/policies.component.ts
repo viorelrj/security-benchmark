@@ -41,8 +41,11 @@ export class PoliciesComponent implements OnInit {
 
   ngOnInit(): void {
     this.policiesService.state.promise.then(() => {
-      this.policiesService.getPolicyListOnce().subscribe(res => this.filenames = res)
-      this.policiesService.getPolicyList().subscribe(res => this.filenames = res);
+      setTimeout(
+        () => this.policiesService.getPolicyListOnce().subscribe(res => {
+          this.filenames = res
+          setTimeout(() => this.policiesService.getPolicyList().subscribe(res => this.filenames = res), 500);
+        }), 500)
     })
   }
 }

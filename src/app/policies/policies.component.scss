@@ -1,0 +1,27 @@
+.header {
+    display: flex;
+    justify-content: flex-end;
+    background: white;
+    padding: 4px;
+
+    input {
+        display: none;
+    }
+
+    label {
+        display: block;
+
+        padding: 8px 16px;
+        border-radius: 4px;
+
+        background: #1E88E5;
+        color: white;
+        cursor: pointer;
+
+        transition: background-color .1s ease;
+
+        &:active {
+            background: #1976D2;
+        }
+    }
+}

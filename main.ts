@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -19,7 +19,7 @@ function createWindow(): BrowserWindow {
     height: size.height,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: (serve) ? true : false,
+      allowRunningInsecureContent: false,
       enableRemoteModule : false // true if you want to use remote module in renderer context (ie. Angular)
     },
   });
@@ -48,6 +48,10 @@ function createWindow(): BrowserWindow {
     // when you should delete the corresponding element.
     win = null;
   });
+
+  ipcMain.handle('app-dir', async (event) => {
+    return app.getPath('appData');
+  })
 
   return win;
 }

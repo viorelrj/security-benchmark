@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-policies-list',
@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PoliciesListComponent implements OnInit {
   @Input()filenames: string;
+  @Output() itemClick: EventEmitter<string>;
 
   constructor() { }
 
