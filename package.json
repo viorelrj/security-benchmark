@@ -95,5 +95,9 @@
   },
   "engines": {
     "node": ">=10.13.0"
+  },
+  "dependencies": {
+    "promisify": "0.0.3",
+    "ts-promisify": "3.3.2"
   }
 }
