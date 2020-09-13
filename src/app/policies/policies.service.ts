@@ -8,7 +8,7 @@ import { ReadyState } from '../core/ready-state';
 @Injectable({
   providedIn: 'root'
 })
-export class AuditService {
+export class PoliciesService {
   state = new ReadyState();
   baseDir = './cache/audits';
 
