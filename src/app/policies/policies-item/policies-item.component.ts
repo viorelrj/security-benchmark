@@ -18,7 +18,7 @@ export class PoliciesItemComponent implements OnInit {
       return;
     }
 
-    this.policiesService.getPolicyItemContent(this.fileName).subscribe((res) => console.log(res));
+    this.policiesService.getPolicyItemContent(this.fileName).then((res) => console.log(res));
   }
 
   handleRemove(): void {
@@ -26,7 +26,7 @@ export class PoliciesItemComponent implements OnInit {
       return;
     }
 
-    this.policiesService.removePolicy(this.fileName).subscribe();
+    this.policiesService.removePolicy(this.fileName);
   }
 
   ngOnInit(): void {

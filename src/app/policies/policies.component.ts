@@ -21,18 +21,17 @@ export class PoliciesComponent implements OnInit {
   }
   
   removePolicy(name: string): void {
-    this.policiesService.removePolicy(name).subscribe(() => {
-      //
-    })
+    this.policiesService.removePolicy(name);
   }
 
   ngOnInit(): void {
-    this.policiesService.state.promise.then(() => {
-      setTimeout(
-        () => this.policiesService.getPolicyListOnce().subscribe(res => {
-          this.filenames = res
-          setTimeout(() => this.policiesService.getPolicyList().subscribe(res => this.filenames = res), 500);
-        }), 500)
-    })
+    this.policiesService.state.promise.then(
+      () => this.policiesService.getPolicyListOnce()
+    ).then(
+      res => {
+        this.filenames = res;
+        this.policiesService.getPolicyList().subscribe(res => this.filenames = res)
+      }
+    )
   }
 }

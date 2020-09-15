@@ -21,27 +21,21 @@ export class PoliciesService {
   init(): void {
     this.fileService.state.promise.then(() => {
       this.baseDir = `${this.fileService.appDataDir}/policy-audits/policies`
-      this.fileService.readDir(this.baseDir).pipe(
-        catchError(() => of(
-          this.fileService.makeDir(this.baseDir).subscribe(() => this.state.resolve())
-        ))
-      ).subscribe(() => {
-        this.state.resolve();
-      })
+      this.fileService.readDir(this.baseDir).catch(
+        () => this.fileService.makeDir(this.baseDir)
+      ).then(() => this.state.resolve())
     })
   }
 
-  getPolicyListOnce(): Observable<string[]> {
+  getPolicyListOnce(): Promise<string[]> {
     return this.fileService.readDir(this.baseDir);
   }
 
-  removePolicy(name: string): Observable<void> {
-    return this.fileService.removeFile(`${this.baseDir}/${name}`).pipe(
-      catchError(() => throwError('No audit to remove') )
-    )
+  removePolicy(name: string): Promise<void> {
+    return this.fileService.removeFile(`${this.baseDir}/${name}`)
   }
 
-  importPolicy(path: string, name: string): Observable<void> {
+  importPolicy(path: string, name: string): Promise<void> {
     return this.fileService.copyFile(path, `${this.baseDir}/${name}`)
   }
 
@@ -49,7 +43,7 @@ export class PoliciesService {
     return this.fileService.watchDirAll(this.baseDir);
   }
 
-  getPolicyItemContent(name: string): Observable<string> {
+  getPolicyItemContent(name: string): Promise<string> {
     return this.fileService.readFile(`${this.baseDir}/${name}`);
   }
 }

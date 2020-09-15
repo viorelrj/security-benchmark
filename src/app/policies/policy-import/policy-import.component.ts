@@ -33,6 +33,6 @@ export class PolicyImportComponent implements OnInit {
       return;
     }
 
-    this.policiesService.importPolicy(this.importPath, this.outFileName).subscribe();
+    this.policiesService.importPolicy(this.importPath, this.outFileName);
   }
 }

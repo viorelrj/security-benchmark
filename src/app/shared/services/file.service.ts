@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ReadyState } from '../../core/ready-state';
 import { ElectronService } from '../../core/services/electron/electron.service';
 
@@ -23,53 +23,28 @@ export class FileService {
     )
   }
 
-  private emitSingle<T>(subscriber: Subscriber<T>, value:T, error: Error) {
-    if (error) {
-      subscriber.error(error);
-    }
-    this.ngZone.run(() => {
-      subscriber.next(value);
-      subscriber.complete();
-      subscriber.unsubscribe();
-    })
+  readDir(src: string): Promise<string[]> {
+    return this.electronService.fs.promises.readdir(src);
   }
 
-  readDir(src: string): Observable<string[]> {
-    return new Observable(subscriber => {
-      this.electronService.fs.readdir(src, {}, (err, files: string[]) => {
-        this.emitSingle(subscriber, files, err);
-      });
-    })
+  makeDir(src: string): Promise<void> {
+    return this.electronService.fs.promises.mkdir(src, {recursive: true})
   }
 
-  makeDir(src: string): Observable<void> {
-    return new Observable(subscriber => {
-      this.electronService.fs.mkdir(src, {recursive: true}, (err:Error) => this.emitSingle(subscriber, null, err))
-    })
+  removeFile(src: string): Promise<void> {
+    return this.electronService.fs.promises.unlink(src);
   }
 
-  removeFile(src: string): Observable<void> {
-    return new Observable(subscriber => {
-      this.electronService.fs.unlink(src, (err:Error) => this.emitSingle(subscriber, null, err));
-    })
+  writeFile(src: string, data:string): Promise<void> {
+    return this.electronService.fs.promises.writeFile(src, data);
   }
 
-  writeFile(src: string, data:string): Observable<void> {
-    return new Observable(subscriber => {
-      this.electronService.fs.writeFile(src, data, {}, (err:Error) => this.emitSingle(subscriber, null, err));
-    })
+  copyFile(src: string, dest: string): Promise<void> {
+    return this.electronService.fs.promises.copyFile(src, dest);
   }
 
-  copyFile(src: string, dest: string): Observable<void> {
-    return new Observable(subscriber => {
-      this.electronService.fs.copyFile(src, dest, (err: Error) => this.emitSingle(subscriber, null, err));
-    })
-  }
-
-  readFile(src: string): Observable<string> {
-    return new Observable(subscriber => {
-      this.electronService.fs.readFile(src, 'utf8', (err, data:string) => this.emitSingle(subscriber, data, err));
-    })
+  readFile(src: string): Promise<string> {
+    return this.electronService.fs.promises.readFile(src, 'utf8');
   }
 
   watchDir(src: string): Observable<string> {
