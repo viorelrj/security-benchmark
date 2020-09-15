@@ -26,19 +26,6 @@ export class PoliciesComponent implements OnInit {
     })
   }
 
-  importPolicy(name: string, data: string): void {
-    this.policiesService.importPolicy(name, data).subscribe(() => {
-      //
-    });
-  }
-
-  handleFileInput(files: FileList): void {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      this.policiesService.importPolicy(file.path, file.name).subscribe();
-    }
-  }
-
   ngOnInit(): void {
     this.policiesService.state.promise.then(() => {
       setTimeout(

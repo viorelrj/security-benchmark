@@ -1,10 +1,6 @@
 
 <div class="header">
-    <label class="button">
-        Import
-        <input type="file" (change)="handleFileInput($event.target.files)">
-    </label>
-    
+    <app-policy-import></app-policy-import>
 </div>
 <app-policies-list
     [filenames]="filenames"

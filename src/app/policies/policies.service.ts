@@ -20,7 +20,6 @@ export class PoliciesService {
 
   init(): void {
     this.fileService.state.promise.then(() => {
-      console.log(this.fileService.appDataDir);
       this.baseDir = `${this.fileService.appDataDir}/policy-audits/policies`
       this.fileService.readDir(this.baseDir).pipe(
         catchError(() => of(
@@ -48,5 +47,9 @@ export class PoliciesService {
 
   getPolicyList(): Observable<string[]> {
     return this.fileService.watchDirAll(this.baseDir);
+  }
+
+  getPolicyItemContent(name: string): Observable<string> {
+    return this.fileService.readFile(`${this.baseDir}/${name}`);
   }
 }

@@ -1,1 +1,22 @@
-<div class="item" (click)="handleClick($event)">{{content}}</div>
+<div class="item">
+    <span class="name">
+        {{fileName}}
+    </span>
+    <div class="controls">
+        <div class="contorl-wrapper">
+            <app-button
+                height="sm"
+                type="ghost"
+                (click)="handleShow()"
+            >Log Content</app-button>
+        </div>
+        <div class="control-wrapper">
+            <app-button
+                height="sm"
+                type="ghost"
+                color="danger"
+                (click)="handleRemove()"
+            >Remove</app-button>
+        </div>
+    </div>
+</div>

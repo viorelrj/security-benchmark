@@ -1,0 +1,80 @@
+@import '../../shared/styles/variables';
+
+$primary: (
+    "background": $color-blue-6,
+    "background-active": $color-blue-7,
+    "text": white,
+    "border": $color-blue-1,
+    "border-active": $color-blue-2,
+    "ghost-text": $color-blue-5,
+    "ghost-text-active": $color-blue-7,
+    "ghost-background-active": $color-blue-1
+);
+
+:host {
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+@mixin ghost($palette) {
+    border-color: map-get($palette, "border");
+    color: map-get($palette, "ghost-text");
+
+    &:active {
+        border-color: map-get($palette, 'border-active');
+        color: map-get($palette, 'ghost-text-active');
+        background: map-get($palette, 'ghost-background-active');
+    }
+}
+
+@mixin full($palette) {
+    color: map-get($palette, "text");
+    background: map-get($palette, "background");
+
+    &:active {
+        background:  map-get($palette, "background-active");
+    }
+}
+
+.button {
+    display: block;
+
+    padding: 0 16px;
+    border-radius: 4px;
+
+    background: none;
+    color: $color-blue-5;
+    border: none;
+
+    transition: background-color .1s ease;
+    cursor: pointer;
+
+    font-size: 14px;
+
+    &.md {
+        line-height: 36px;
+    }
+
+    &.sm {
+        line-height: 24px;
+    }
+
+    &.ghost {
+        border-width: 1px;
+        border-style: solid;
+
+        &.primary { @include ghost($primary) }
+    }
+
+    &.full {
+        
+        &.primary { @include full($primary) }
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+}

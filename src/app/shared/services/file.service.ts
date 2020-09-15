@@ -68,7 +68,7 @@ export class FileService {
 
   readFile(src: string): Observable<string> {
     return new Observable(subscriber => {
-      this.electronService.fs.readFile(src, {}, (err, data:string) => this.emitSingle(subscriber, data, err));
+      this.electronService.fs.readFile(src, 'utf8', (err, data:string) => this.emitSingle(subscriber, data, err));
     })
   }
 

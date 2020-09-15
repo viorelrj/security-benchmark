@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { UiModule } from './ui/ui.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HttpClientModule,
     CoreModule,
     SharedModule,
+    UiModule,
     HomeModule,
     PoliciesModule,
     AppRoutingModule,

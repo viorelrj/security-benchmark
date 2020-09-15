@@ -7,20 +7,29 @@ import { PoliciesService } from '../policies.service';
   styleUrls: ['./policies-item.component.scss']
 })
 export class PoliciesItemComponent implements OnInit {
-  @Input() content: string;
+  @Input() fileName: string;
 
   constructor(
     private policiesService: PoliciesService
   ) { }
 
-  handleClick(ev) {
-    console.log(ev);
+  handleShow(): void {
+    if (!this.policiesService.state.isReady) {
+      return;
+    }
+
+    this.policiesService.getPolicyItemContent(this.fileName).subscribe((res) => console.log(res));
+  }
+
+  handleRemove(): void {
+    if (!this.policiesService.state.isReady) {
+      return;
+    }
+
+    this.policiesService.removePolicy(this.fileName).subscribe();
   }
 
   ngOnInit(): void {
-    this.policiesService.state.promise.then(() => {
-      // this.policiesService.
-    })
   }
 
 }
