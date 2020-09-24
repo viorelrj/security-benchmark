@@ -1,9 +1,11 @@
-<label class="button import-button form-control">
-    {{ importFileName || 'Choose a file' }}
-    <input type="file" (change)="handleFileInput($event.target.files)">
-</label>
-<input class="form-control text-input" type="text" placeholder="Import as..." [(ngModel)]="outFileName">
-<app-button
-    class="form-control"
-    (click)="handleImport()"
->Save</app-button>
+<form (submit)="onSubmit()" #policyImportForm="ngForm">
+    <label class="button import-button form-control" tabindex="0">
+        {{ importFileName || 'Choose a file' }}
+        <input type="file" (change)="handleFileInput($event.target.files)" name="filesource">
+    </label>
+    <input name="filename" class="form-control text-input" type="text" placeholder="Import as..." [(ngModel)]="outFileName">
+    <app-button
+        class="form-control"
+        (click)="handleImport()"
+    >Save</app-button>
+</form>

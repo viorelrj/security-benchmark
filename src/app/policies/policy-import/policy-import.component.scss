@@ -1,11 +1,16 @@
 @import '../../shared/styles/variables';
 
-:host {
+form {
     display: flex;
 }
 
 .form-control {
     margin: 0 4px;
+
+    &:focus {
+        box-shadow: rgba($color-blue-7, 0.2) 0px 2px 8px 0px;
+        outline: none;
+    }
 }
 
 .button {
@@ -69,7 +74,6 @@
     }
 
     &:focus {
-        box-shadow: none;
         outline: none;
     }
 }
