@@ -1,0 +1,66 @@
+@import '../../shared/styles/variables';
+
+.modal-backdrop {
+    display: none;
+    
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    
+    justify-content: center;
+    align-items: center;
+    
+    padding: $sp*3;
+    backdrop-filter: none;
+    background-color: none;
+
+    transition: background-color .15s ease, backdrop-filter .15s ease;
+    
+    &.show {
+        transform: translateY(0);
+        display: flex;
+        backdrop-filter: blur(1px);
+        background-color: rgba($color-blue-05, .4);
+    }
+}
+
+.modal {
+    background: white;
+    padding: $sp*2;
+    border-radius: $sp*.5;
+
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    border: 1px solid $color-gray-1;
+
+    &__head {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: $sp;
+    }
+
+    &__close {
+        border: none;
+        background: none;
+        padding: 0;
+        height: $sp*3;
+        width: $sp*3;
+        cursor: pointer;
+
+        border-radius: $sp*.5;
+
+        transition: background .15s ease;
+
+        &:hover {
+            background: $color-blue-05;
+        }
+        &:active {
+            background: $color-blue-1;
+        }
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+}

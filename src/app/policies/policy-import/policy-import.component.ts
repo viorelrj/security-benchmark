@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ButtonComponent } from 'app/ui/button/button.component';
+import { IModalChildProps, ModalService } from 'app/ui/modal/modal.service';
 import { PoliciesService } from '../policies.service';
 
 @Component({
@@ -11,6 +13,7 @@ export class PolicyImportComponent implements OnInit {
     private policiesService: PoliciesService
   ) { }
 
+  @Input() modalData?: IModalChildProps;
   importPath: string;
   importFileName: string;
   outFileName: string;
@@ -34,5 +37,9 @@ export class PolicyImportComponent implements OnInit {
     }
 
     this.policiesService.importPolicy(this.importPath, this.outFileName);
+    
+    if (this.modalData && this.modalData.finalize) {
+      this.modalData.finalize();
+    }
   }
 }

@@ -13,7 +13,7 @@ import { IFormControl, FormControlType, FormControlHeight, FormControlTheme } fr
 export class ButtonComponent implements OnInit, IFormControl {
   @Input() type: FormControlType = 'full';
   @Input() height: FormControlHeight = 'md';
-  @Input() theme: FormControlTheme = 'primary'; 
+  @Input() theme: FormControlTheme = 'primary';
 
   constructor() { }
 

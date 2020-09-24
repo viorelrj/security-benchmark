@@ -1,6 +1,8 @@
 
 <div class="header">
-    <app-policy-import></app-policy-import>
+    <app-button
+        (click)="openImportModal()"
+    >Import</app-button>
 </div>
 <app-policies-list
     [filenames]="filenames"

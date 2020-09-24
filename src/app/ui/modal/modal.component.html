@@ -1,0 +1,10 @@
+<div class="modal-backdrop" [ngClass]="{'show': isShown}">
+    <div class="modal">
+        <div class="modal__head">
+            <button class="modal__close" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal__content">
+            <ng-template modalHost></ng-template>
+        </div>
+    </div>
+</div>
