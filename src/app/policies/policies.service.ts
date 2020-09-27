@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FileService } from '../shared/services/file.service';
 import { PolicyFormatterService } from './policy-formatter.service';
 
