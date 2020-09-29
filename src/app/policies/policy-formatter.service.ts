@@ -1,74 +1,104 @@
 import { Injectable } from '@angular/core';
-import { start } from 'repl';
-
 
 const getTagName = (src: string): string => src.replace(/[<>:/]/g, ' ').trim().split(' ')[0];
 const parseAttribute = (src: string): string[] => src.replace(/[:]/g, ' ').replace(/"/g, '').split(' ');
 
+
 interface IPolicyNode {
   tagName: string;
   attributes?: { [key: string]: string };
-  content?: IPolicyNode[];
+  content?: IPolicyNode[] | string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyFormatterService {
+
+  constructor() { }
+
+  public format(text: string): Promise<string> {
+    text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
+    const parser = new Parser(text);
+    const res = parser.parse()
+    console.log(res);
+
+
+    return new Promise<string>(() => {});
+  }
+}
+
+
+class Parser {
+  private src: string;
+  private nextIndex = 0;
+
   private regAnyStartTag = new RegExp('<[^/>]{1,}>');
   private regAnyEndTag = new RegExp('<[/][^>]{1,}>');
   private regNamedStartTag = (name: string): RegExp => new RegExp(`<${name}[^>]{0,}>`);
   private regNamedEndTag = (name: string): RegExp => new RegExp(`<[/]${name}[^>]{0,}>`);
   private gReganyAttributeValuePair = /[^\s<]{1,}:"[^"]{1,}"/g
 
-  constructor() { }
+  constructor(src: string) {
+    this.src = src;
+  }
 
-  private parse(src, exitTagName=''): IPolicyNode[] {
-    src = src.trim();
-    const rStartTag = this.regAnyStartTag.exec(src);
-    const rEndTag = this.regAnyEndTag.exec(src);
 
-    const startTag = rStartTag[0];
-    const endTag = rEndTag[0];
-    const tagName = getTagName(startTag);
+  private buildSubtree(currIndex: number, lastTag = ''): IPolicyNode[] {
+    const res:IPolicyNode[] = [];
+    let src = this.src.slice(currIndex, this.src.length);
 
-    const ret = [];
-    
-    if (rStartTag.index == 0) {
+    let firstEndTag = this.regAnyEndTag.exec(src);
+    let firstStartTag = this.regAnyStartTag.exec(src);
+    let obj = null as IPolicyNode;
+
+    if (!firstStartTag || !firstEndTag) {
+      return [];
+    }
+
+
+    if (src[0] !== '<' && firstEndTag.index < firstStartTag.index) {
+      obj = {
+        tagName: '__raw__'
+      }
+
+      obj.content = [src.slice(0, firstEndTag.index)];
+      this.nextIndex += obj.content[0].length + firstEndTag[0].length;
+
+      return [obj];
+    }
+
+    while (firstStartTag && firstEndTag && firstStartTag.index < firstEndTag.index) {
       const obj:IPolicyNode = {
-        tagName: tagName,
-        content: []
-      };
-      
-      const attributeValuePairs = this.gReganyAttributeValuePair.exec(startTag);
+        tagName: getTagName(firstStartTag[0])
+      }
+      const attributeValuePairs = this.gReganyAttributeValuePair.exec(firstStartTag[0]);
       if (attributeValuePairs) {
         for (let i = 0; i < attributeValuePairs.length; i++) {
           obj.attributes = obj.attributes || {};
           const [key, value] = parseAttribute(attributeValuePairs[i]);
-          
           obj.attributes[key] = value;
         }
       }
       
-      src = src.slice(startTag.length+1, src.length);
-      obj.content = this.parse(src, tagName);
-      ret.push(obj);
-    } else if (rEndTag.index < rStartTag.index) {
+      currIndex += firstStartTag.index + firstStartTag[0].length + 1;
+      this.nextIndex = currIndex;
+      obj.content = this.buildSubtree(currIndex, getTagName(firstStartTag[0]));
+      currIndex = this.nextIndex;
+      
+      src = this.src.slice(currIndex, this.src.length);
 
-      ret.push({
-        tagName: '__raw__',
-        content: src.slice(startTag.length+1, rEndTag.index)
-      });
+      firstEndTag = this.regAnyEndTag.exec(src);
+      firstStartTag = this.regAnyStartTag.exec(src);
+
+      res.push(obj);
     }
+    this.nextIndex += (firstStartTag) ? firstStartTag.index : 0;
 
-    return ret;
+    return res;
   }
-
-  public format(text: string): Promise<string> {
-    text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
-    console.log(this.parse(text));
-
-
-    return new Promise<string>(() => {});
+  
+  parse(): any {
+    return this.buildSubtree(0);
   }
 }
