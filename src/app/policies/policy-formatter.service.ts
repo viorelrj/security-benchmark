@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 const getTagName = (src: string): string => src.replace(/[<>:/]/g, ' ').trim().split(' ')[0];
-const parseAttribute = (src: string): string[] => src.replace(/[:]/g, ' ').replace(/"/g, '').split(' ');
+const parseAttribute = (src: string): string[] => src.replace(/[:]/g, '~').replace(/"/g, '').split('~');
 
 
 interface IPolicyNode {
