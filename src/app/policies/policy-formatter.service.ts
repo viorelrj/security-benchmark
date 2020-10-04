@@ -43,8 +43,18 @@ class Parser {
     this.src = src;
   }
 
+  private getAttributeValuePairs(src): string[] {
+    let temp: unknown;
+    const attributeValuePairs = [];
+    do {
+      temp = this.gReganyAttributeValuePair.exec(src);
+      temp && attributeValuePairs.push(temp[0]);
+    } while (temp);
 
-  private buildSubtree(currIndex: number, lastTag = ''): IPolicyNode[] {
+    return attributeValuePairs;
+  }
+
+  private buildSubtree(currIndex: number): IPolicyNode[] {
     const res:IPolicyNode[] = [];
     let src = this.src.slice(currIndex, this.src.length);
 
@@ -72,7 +82,8 @@ class Parser {
       const obj:IPolicyNode = {
         tagName: getTagName(firstStartTag[0])
       }
-      const attributeValuePairs = this.gReganyAttributeValuePair.exec(firstStartTag[0]);
+
+      const attributeValuePairs = this.getAttributeValuePairs(firstStartTag[0]);
       if (attributeValuePairs) {
         for (let i = 0; i < attributeValuePairs.length; i++) {
           obj.attributes = obj.attributes || {};
@@ -82,8 +93,8 @@ class Parser {
       }
       
       currIndex += firstStartTag.index + firstStartTag[0].length + 1;
-      this.nextIndex = currIndex;
-      obj.content = this.buildSubtree(currIndex, getTagName(firstStartTag[0]));
+      this.nextIndex = currIndex; 
+      obj.content = this.buildSubtree(currIndex);
       currIndex = this.nextIndex;
       
       src = this.src.slice(currIndex, this.src.length);
