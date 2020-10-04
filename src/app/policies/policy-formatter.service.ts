@@ -20,9 +20,8 @@ export class PolicyFormatterService {
   public format(text: string): Promise<string> {
     text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
     const parser = new Parser(text);
-    const res = parser.parse()
-    console.log(res);
-
+    const res = parser.parse();
+    console.log(JSON.stringify(res));
 
     return new Promise<string>(() => {});
   }
@@ -54,20 +53,19 @@ class Parser {
     return attributeValuePairs;
   }
 
-  private buildSubtree(currIndex: number): IPolicyNode[] {
+  private buildSubtree(currIndex: number, debug?: boolean): IPolicyNode[] {
     const res:IPolicyNode[] = [];
     let src = this.src.slice(currIndex, this.src.length);
 
     let firstEndTag = this.regAnyEndTag.exec(src);
     let firstStartTag = this.regAnyStartTag.exec(src);
     let obj = null as IPolicyNode;
-
-    if (!firstStartTag || !firstEndTag) {
+    
+    if (!firstEndTag) {
       return [];
     }
-
-
-    if (src[0] !== '<' && firstEndTag.index < firstStartTag.index) {
+    
+    if (src[0] !== '<' && firstEndTag.index < (firstStartTag || {index: firstEndTag.index + 1}).index) {
       obj = {
         tagName: '__raw__'
       }
@@ -76,6 +74,10 @@ class Parser {
       this.nextIndex += obj.content[0].length + firstEndTag[0].length;
 
       return [obj];
+    }
+
+    if (!firstStartTag) {
+      return [];
     }
 
     while (firstStartTag && firstEndTag && firstStartTag.index < firstEndTag.index) {
@@ -104,8 +106,20 @@ class Parser {
 
       res.push(obj);
     }
-    this.nextIndex += (firstStartTag) ? firstStartTag.index : 0;
 
+    const temp = this.src.slice(this.nextIndex, this.src.length).replace(/\n/g, '').trim();
+    const _rEnd = this.regAnyEndTag.exec(temp);
+
+    if (_rEnd && _rEnd.index == 0) { // if there is no content, but end tag right away
+      this.nextIndex += (firstEndTag) ? firstEndTag.index + firstEndTag[0].length : 0;
+    } else if (_rEnd && _rEnd.index !== 0) {
+      let potential = res[res.length - 1];
+      while (Array.isArray(potential.content) && potential.content.length > 0) {
+        // @ts-expect-error: We don't really care if content will be string or array;
+        potential = potential.content[potential.content.length - 1];
+      }
+      potential.content = this.buildSubtree(currIndex, true);
+    }
     return res;
   }
   
