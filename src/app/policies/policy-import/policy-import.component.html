@@ -1,4 +1,4 @@
-<form (submit)="onSubmit()" #policyImportForm="ngForm">
+<form #policyImportForm="ngForm">
     <label class="button import-button form-control" tabindex="0">
         {{ importFileName || 'Choose a file' }}
         <input type="file" (change)="handleFileInput($event.target.files)" name="filesource">
