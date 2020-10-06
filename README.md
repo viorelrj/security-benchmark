@@ -1,14 +1,12 @@
-# Introduction
+# General
 
-## General
-
-This project is a desktop application developed in context of the `Criptography and Securty` TUM course. The application is meant to:
+This project is a desktop application developed in context of the `Cryptography and Securty` TUM course. The application is meant to:
 * import [Nesus .audit policy files](https://www.tenable.com/downloads/download-all-compliance-audit-files) (Which provide OS security audit)
 * Write a custom parser for `.audit` files and import it as a custom data structure
 * Run OS audits based on imported files
 * Add ability to enforce settings `failed` audit tests.
 
-## Personal
+# Personal
 
 I use this project as an opportunity to deepen my understanding of Angular. Here I experiment with `theming` best practices, build custom UI library, learn how to make a better separation of logic and get more comfortable with rxjs and angular internals.
 
