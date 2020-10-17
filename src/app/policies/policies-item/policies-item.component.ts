@@ -18,7 +18,7 @@ export class PoliciesItemComponent implements OnInit {
       return;
     }
 
-    this.policiesService.getPolicyItemContent(this.fileName).then((res) => console.log(res));
+    this.policiesService.getPolicyItemContent(this.fileName).then(res => console.log(res));
   }
 
   handleRemove(): void {

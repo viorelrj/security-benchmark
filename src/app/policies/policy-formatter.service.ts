@@ -4,10 +4,14 @@ const getTagName = (src: string): string => src.replace(/[<>:/]/g, ' ').trim().s
 const parseAttribute = (src: string): string[] => src.replace(/[:]/g, '~').replace(/"/g, '').split('~');
 
 
-interface IPolicyNode {
+export interface IPolicyNode {
   tagName: string;
   attributes?: { [key: string]: string };
-  content?: IPolicyNode[] | string[];
+  content?: IPolicyNode[] | INessusItem;
+}
+
+export interface INessusItem {
+  [key: string]: string;
 }
 
 @Injectable({
@@ -17,13 +21,14 @@ export class PolicyFormatterService {
 
   constructor() { }
 
-  public format(text: string): Promise<string> {
-    text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
-    const parser = new Parser(text);
-    const res = parser.parse();
-    console.log(JSON.stringify(res));
+  public format(text: string): Promise<IPolicyNode> {
+    return new Promise<IPolicyNode>((res, rej) => {
+      text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
+      const parser = new Parser(text);
+      const result = parser.parse();
 
-    return new Promise<string>(() => {});
+      res(result);
+    });
   }
 }
 
@@ -53,6 +58,28 @@ class Parser {
     return attributeValuePairs;
   }
 
+  private parseCustomIdem(src: string): INessusItem {
+    const regKeyVal = /\S{1,}\s{0,}:\s{0,}(("[^"]{0,}")|(\S{0,}))/g;
+    const regKey = /\S{0,}/;
+    const regVal = /:\s{0,}(("[^"]{0,}")|(\S{0,}))/
+
+    const ret = {}
+    let pair = regKeyVal.exec(src);
+
+    while (pair) {
+      const trimQuotes = /^"+|"+$/g;
+      const content = pair[0];
+      const key = regKey.exec(content)[0];
+      const val = regVal.exec(content)[0].substring(1).trim().replace(trimQuotes, '');
+
+      ret[key] = val;
+
+      pair = regKeyVal.exec(src);
+    }
+
+    return ret;
+  }
+
   private buildSubtree(currIndex: number, debug?: boolean): IPolicyNode[] {
     const res:IPolicyNode[] = [];
     let src = this.src.slice(currIndex, this.src.length);
@@ -67,11 +94,12 @@ class Parser {
     
     if (src[0] !== '<' && firstEndTag.index < (firstStartTag || {index: firstEndTag.index + 1}).index) {
       obj = {
-        tagName: '__raw__'
+        tagName: 'nessus_item'
       }
 
-      obj.content = [src.slice(0, firstEndTag.index)];
-      this.nextIndex += obj.content[0].length + firstEndTag[0].length;
+      const content = src.slice(0, firstEndTag.index);
+      obj.content = this.parseCustomIdem(content);
+      this.nextIndex += content.length + firstEndTag[0].length;
 
       return [obj];
     }
@@ -115,7 +143,6 @@ class Parser {
     } else if (_rEnd && _rEnd.index !== 0) {
       let potential = res[res.length - 1];
       while (Array.isArray(potential.content) && potential.content.length > 0) {
-        // @ts-expect-error: We don't really care if content will be string or array;
         potential = potential.content[potential.content.length - 1];
       }
       potential.content = this.buildSubtree(currIndex, true);

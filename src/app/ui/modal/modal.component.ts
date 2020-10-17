@@ -27,7 +27,6 @@ export class ModalComponent implements OnInit {
   }
 
   loadChild(child: ModalChild): void {
-    console.log(child);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(child.component);
     const viewContainerRef = this.childContainer.viewContainerRef;
     viewContainerRef.clear();
