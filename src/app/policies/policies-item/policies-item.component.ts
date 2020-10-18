@@ -13,14 +13,6 @@ export class PoliciesItemComponent implements OnInit {
     private policiesService: PoliciesService
   ) { }
 
-  handleShow(): void {
-    if (!this.policiesService.state.isReady) {
-      return;
-    }
-
-    this.policiesService.getPolicyItemContent(this.fileName).then(res => console.log(res));
-  }
-
   handleRemove(): void {
     if (!this.policiesService.state.isReady) {
       return;

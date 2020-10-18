@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ButtonComponent } from 'app/ui/button/button.component';
-import { IModalChildProps, ModalService } from 'app/ui/modal/modal.service';
+import { CheckboxListComponent } from 'app/ui/checkbox-list/checkbox-list.component';
+import { IModalChildProps } from 'app/ui/modal/modal.service';
 import { PoliciesService } from '../policies.service';
 
 @Component({
@@ -17,7 +18,8 @@ export class PolicyImportComponent implements OnInit {
   importPath: string;
   importFileName: string;
   outFileName: string;
-
+  checks = [] as string[];
+  @ViewChild(CheckboxListComponent) checkboxList: CheckboxListComponent;
   ngOnInit(): void {
   }
 
@@ -25,21 +27,29 @@ export class PolicyImportComponent implements OnInit {
     const file = files[0];
     this.importPath = file.path;
     this.importFileName = file.name;
+    this.handleFileLoad();
+  }
+
+  handleFileLoad() {
+    this.policiesService.getAdaptedPolicy(this.importPath).then(
+      res => this.checks = Object.keys(res.checks)
+    )
   }
 
   handleImport(): void {
-    if (!this.policiesService.state.isReady) {
-      return;
-    }
+    console.log(this.checkboxList.getSelected());
+    // if (!this.policiesService.state.isReady) {
+    //   return;
+    // }
 
-    if (!this.importPath || !this.outFileName) {
-      return;
-    }
+    // if (!this.importPath || !this.outFileName) {
+    //   return;
+    // }
 
-    this.policiesService.importPolicy(this.importPath, this.outFileName);
+    // this.policiesService.importPolicy(this.importPath, this.outFileName);
     
-    if (this.modalData && this.modalData.finalize) {
-      this.modalData.finalize();
-    }
+    // if (this.modalData && this.modalData.finalize) {
+    //   this.modalData.finalize();
+    // }
   }
 }

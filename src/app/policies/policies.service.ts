@@ -36,16 +36,20 @@ export class PoliciesService {
     return this.fileService.removeFile(`${this.baseDir}/${name}`)
   }
 
-  importPolicy(path: string, name: string): Promise<void> {
-    return this.fileService.copyFile(path, `${this.baseDir}/${name}`)
+  readNessusPolicy(path: string): Promise<string> {
+    return this.fileService.readFile(path);
+  }
+
+  savePolicy(name: string, data: string): Promise<void> {
+    return this.fileService.writeFile(`${this.baseDir}/${name}.json`, data);
   }
 
   getPolicyList(): Observable<string[]> {
     return this.fileService.watchDirAll(this.baseDir);
   }
 
-  getPolicyItemContent(name: string): Promise<IPolicy> {
-    return this.fileService.readFile(`${this.baseDir}/${name}`).then(
+  getAdaptedPolicy(path: string): Promise<IPolicy> {
+    return this.fileService.readFile(path).then(
       (res) => this.policyFormatterService.format(res)
     )
   }

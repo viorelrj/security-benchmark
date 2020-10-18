@@ -1,0 +1,5 @@
+<app-checkbox
+    *ngFor="let key of getKeys()"
+    [text]="key"
+    [(inputModel)]="state[key]"
+></app-checkbox>

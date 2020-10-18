@@ -1,7 +1,8 @@
 @import '../../shared/styles/variables';
 
-form {
+.row {
     display: flex;
+    margin-bottom: $sp;
 }
 
 .form-control {
