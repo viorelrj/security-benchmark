@@ -3,14 +3,21 @@ import { Injectable } from '@angular/core';
 const getTagName = (src: string): string => src.replace(/[<>:/]/g, ' ').trim().split(' ')[0];
 const parseAttribute = (src: string): string[] => src.replace(/[:]/g, '~').replace(/"/g, '').split('~');
 
-
-export interface IPolicyNode {
-  tagName: string;
-  attributes?: { [key: string]: string };
-  content?: IPolicyNode[] | INessusItem;
+export interface IPolicy {
+  checks: {
+    [key: string]: INessusItem
+  },
+  structure: IPolicyNode[]
 }
 
-export interface INessusItem {
+interface IPolicyNode {
+  tagName: string;
+  attributes?: { [key: string]: string };
+  content?: IPolicyNode[];
+  description?: string;
+}
+
+interface INessusItem {
   [key: string]: string;
 }
 
@@ -21,8 +28,8 @@ export class PolicyFormatterService {
 
   constructor() { }
 
-  public format(text: string): Promise<IPolicyNode> {
-    return new Promise<IPolicyNode>((res, rej) => {
+  public format(text: string): Promise<IPolicy> {
+    return new Promise<IPolicy>((res, rej) => {
       text = text.split('\n').filter(line => line.trim()[0] != '#').join('\n');
       const parser = new Parser(text);
       const result = parser.parse();
@@ -36,6 +43,10 @@ export class PolicyFormatterService {
 class Parser {
   private src: string;
   private nextIndex = 0;
+
+  private custom_items: {
+    [key: string]: INessusItem;
+  } = {};
 
   private regAnyStartTag = new RegExp('<[^/>]{1,}>');
   private regAnyEndTag = new RegExp('<[/][^>]{1,}>');
@@ -58,7 +69,7 @@ class Parser {
     return attributeValuePairs;
   }
 
-  private parseCustomIdem(src: string): INessusItem {
+  private parseCustomItem(src: string): INessusItem {
     const regKeyVal = /\S{1,}\s{0,}:\s{0,}(("[^"]{0,}")|(\S{0,}))/g;
     const regKey = /\S{0,}/;
     const regVal = /:\s{0,}(("[^"]{0,}")|(\S{0,}))/
@@ -80,28 +91,27 @@ class Parser {
     return ret;
   }
 
-  private buildSubtree(currIndex: number, debug?: boolean): IPolicyNode[] {
+  private buildSubtree(currIndex: number, isCustomItem?: boolean): IPolicyNode[]|string {
     const res:IPolicyNode[] = [];
     let src = this.src.slice(currIndex, this.src.length);
 
     let firstEndTag = this.regAnyEndTag.exec(src);
     let firstStartTag = this.regAnyStartTag.exec(src);
-    let obj = null as IPolicyNode;
     
     if (!firstEndTag) {
       return [];
     }
     
     if (src[0] !== '<' && firstEndTag.index < (firstStartTag || {index: firstEndTag.index + 1}).index) {
-      obj = {
-        tagName: 'nessus_item'
+      const rawContent = src.slice(0, firstEndTag.index);
+      const content = this.parseCustomItem(rawContent);
+      const key = content['description'];
+      if (isCustomItem && !this.custom_items[key]) {
+        this.custom_items[key] = content;
       }
 
-      const content = src.slice(0, firstEndTag.index);
-      obj.content = this.parseCustomIdem(content);
-      this.nextIndex += content.length + firstEndTag[0].length;
-
-      return [obj];
+      this.nextIndex += rawContent.length + firstEndTag[0].length;
+      return key;
     }
 
     if (!firstStartTag) {
@@ -124,7 +134,16 @@ class Parser {
       
       currIndex += firstStartTag.index + firstStartTag[0].length + 1;
       this.nextIndex = currIndex; 
-      obj.content = this.buildSubtree(currIndex);
+      const content = this.buildSubtree(currIndex, obj.tagName === 'custom_item')
+      
+      if (typeof content === 'string') {
+        obj.attributes = {
+          ...obj.attributes,
+          description: content
+        };
+      } else {
+        obj.content = content
+      }
       currIndex = this.nextIndex;
       
       src = this.src.slice(currIndex, this.src.length);
@@ -145,12 +164,24 @@ class Parser {
       while (Array.isArray(potential.content) && potential.content.length > 0) {
         potential = potential.content[potential.content.length - 1];
       }
-      potential.content = this.buildSubtree(currIndex, true);
+      const content = this.buildSubtree(currIndex);
+      if (typeof content !== 'string') {
+        potential.content = content;
+      }
     }
     return res;
   }
   
-  parse(): any {
-    return this.buildSubtree(0);
+  parse(): IPolicy {
+    const content = this.buildSubtree(0);
+
+    if (typeof content !== 'string') {
+      return {
+        structure: content,
+        checks: this.custom_items
+      }
+    } else {
+      throw 'Parsing error. Has the file been modified?';
+    }
   }
 }

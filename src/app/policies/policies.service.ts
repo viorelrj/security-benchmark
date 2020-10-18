@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileService } from '../shared/services/file.service';
-import { IPolicyNode, PolicyFormatterService } from './policy-formatter.service';
+import { IPolicy, PolicyFormatterService } from './policy-formatter.service';
 
 import { ReadyState } from '../core/ready-state';
 
@@ -44,7 +44,7 @@ export class PoliciesService {
     return this.fileService.watchDirAll(this.baseDir);
   }
 
-  getPolicyItemContent(name: string): Promise<IPolicyNode> {
+  getPolicyItemContent(name: string): Promise<IPolicy> {
     return this.fileService.readFile(`${this.baseDir}/${name}`).then(
       (res) => this.policyFormatterService.format(res)
     )
