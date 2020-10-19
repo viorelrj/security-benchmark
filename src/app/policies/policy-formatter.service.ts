@@ -37,8 +37,52 @@ export class PolicyFormatterService {
       res(result);
     });
   }
+
+  public filter(content: IPolicy, selected: string[]): Promise<IPolicy> {
+    return new Promise<IPolicy>((res, rej) => {
+      const result = new Interpreter(content).filter(selected);
+      res(result);
+    })
+  }
 }
 
+
+class Interpreter {
+  src: IPolicy;
+  checks = {} as {[key: string]: INessusItem}
+
+  constructor(src: IPolicy) {
+    this.src = src;
+  }
+
+  filter(selected: string[]): IPolicy|null {
+    for (const key of selected) {
+      this.checks[key] = this.src.checks[key];
+    }
+
+    console.log(this.shakeTree(this.src.structure[0]));
+
+    return this.src;
+  }
+
+  private shakeTree(current: IPolicyNode): IPolicyNode|null {
+    if (current.content && current.content.length) {
+      current.content = current.content.map(child => this.shakeTree(child)).filter(item => item !== null);
+
+      current = (current.content && current.content.length)? current : null;
+    } else if (current.tagName === 'custom_item') {
+      // Remove custom_item if it was not checked
+      current = (current.attributes.description && this.checks[current.attributes.description]) ? current : null
+    }
+
+    if (current && current.tagName === 'if') {
+      // Remove "if" node if there is no condition
+      current = (current.content.map(item => item.tagName).includes('condition'))? current : null
+    }
+
+    return current;
+  }
+}
 
 class Parser {
   private src: string;

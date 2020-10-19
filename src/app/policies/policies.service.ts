@@ -48,6 +48,13 @@ export class PoliciesService {
     return this.fileService.watchDirAll(this.baseDir);
   }
 
+  importAdaptedPolicy(content: IPolicy, selected: string[], name: string): void {
+    // console.log(content);
+    this.policyFormatterService.filter(content, selected).then(
+      // res => console.error(res)
+    );
+  }
+
   getAdaptedPolicy(path: string): Promise<IPolicy> {
     return this.fileService.readFile(path).then(
       (res) => this.policyFormatterService.format(res)
