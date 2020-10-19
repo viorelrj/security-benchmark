@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-checkbox',
@@ -6,6 +6,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./checkbox.component.scss']
 })
 export class CheckboxComponent implements OnInit {
+  @ViewChild('checkbox', {static: true}) checkbox: ElementRef;
+
   @Input() inputModel: boolean;
   @Output() inputModelChange = new EventEmitter<boolean>();
 
@@ -14,10 +16,9 @@ export class CheckboxComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.inputModel = true;
   }
 
-  handleChange(e: any) {
+  handleChange(e: any): void {
     const val = e.target.checked
     this.inputModel = val;
     this.inputModelChange.emit(val);

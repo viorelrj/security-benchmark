@@ -1,7 +1,15 @@
+@import '../../shared/styles/variables';
+
 :host {
   display: flex;
 }
 
 label {
+  display: flex;
   cursor: pointer;
+
+  input {
+    margin-right: $sp;
+    flex-shrink: 0;
+  }
 }

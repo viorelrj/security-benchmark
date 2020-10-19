@@ -1,5 +1,30 @@
-<app-checkbox
-    *ngFor="let key of getKeys()"
-    [text]="key"
-    [(inputModel)]="state[key]"
-></app-checkbox>
+<div class="wrapper" *ngIf="list.length">
+    <div class="head">
+        <div class="row">
+            <input
+                class="filter-control control"
+                placeholder="Filter..."
+                *ngIf="hasFilter"
+                type="text"
+                [(ngModel)]="filterQuery"
+                (ngModelChange)="handleFilterUpdate()"
+            >
+            <app-button
+                class="control"
+                height="sm"
+                type="ghost"
+                theme="white"
+                (click)="toggle()"
+            >
+            {{ globalVal? "uncheck all" : "check all" }}
+            </app-button>
+        </div>
+    </div>
+    <div class="checkbox-container">
+        <app-checkbox
+            *ngFor="let key of keysToShow"
+            [text]="key"
+            [(inputModel)]="state[key]"
+        ></app-checkbox>
+    </div>
+</div>

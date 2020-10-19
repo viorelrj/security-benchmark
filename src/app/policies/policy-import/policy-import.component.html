@@ -11,7 +11,9 @@
         >Save</app-button>
     </div>
     <app-checkbox-list
+        class="form-control"
         #checkList
         [list]="checks"
+        [hasFilter]="true"
     ></app-checkbox-list>
 </form>

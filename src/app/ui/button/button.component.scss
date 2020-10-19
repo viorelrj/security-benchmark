@@ -29,6 +29,19 @@ $primary: (
     }
 }
 
+@mixin white($palette) {
+    border-color: map-get($palette, "border");
+    color: map-get($palette, "ghost-text");
+
+    background: white;
+
+    &:active {
+        border-color: map-get($palette, 'border-active');
+        color: map-get($palette, 'ghost-text-active');
+        background: map-get($palette, 'ghost-background-active');
+    }
+}
+
 @mixin full($palette) {
     color: map-get($palette, "text");
     background: map-get($palette, "background");
@@ -48,10 +61,19 @@ $primary: (
     color: $color-blue-5;
     border: none;
 
-    transition: background-color .1s ease;
+    transition-property: background-color, box-shadow;
+    transition-duration: .1s;
+    transition-timing-function: ease;
+    will-change: background-color, box-shadow;
     cursor: pointer;
 
     font-size: 14px;
+
+    white-space: nowrap;
+
+    &:hover {
+        box-shadow: rgba($color-blue-7, 0.1) 0px 2px 8px 0px;
+    }
 
     &.md {
         line-height: 36px;
@@ -66,6 +88,7 @@ $primary: (
         border-style: solid;
 
         &.primary { @include ghost($primary) }
+        &.white{ @include white($primary) }
     }
 
     &.full {

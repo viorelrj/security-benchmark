@@ -2,11 +2,11 @@
 
 .row {
     display: flex;
-    margin-bottom: $sp;
+    margin: 0 -#{$sp*.5} $sp;
 }
 
 .form-control {
-    margin: 0 4px;
+    margin: 0 $sp*.5;
 
     &:focus {
         box-shadow: rgba($color-blue-7, 0.2) 0px 2px 8px 0px;

@@ -24,6 +24,9 @@ export class PolicyImportComponent implements OnInit {
   }
 
   handleFileInput(files: FileList): void {
+    if (!files.length) {
+      return;
+    }
     const file = files[0];
     this.importPath = file.path;
     this.importFileName = file.name;

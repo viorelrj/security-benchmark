@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 interface ICheckBoxListState {
   [key: string]: boolean;
@@ -13,19 +13,35 @@ export class CheckboxListComponent implements OnInit, OnChanges {
   constructor() { }
 
   @Input() list: string[];
-  state: {[key: string]: boolean}
+  @Input() hasFilter: boolean;
 
-  // Should implement this as a pipe later
-  getKeys(): string[] {
-    return Object.keys(this.state) || [];
-  }
+  state: {[key: string]: boolean}
+  keysToShow: string[] = [];
+  filterQuery: string;
+  globalVal = false;
+
 
   ngOnInit(): void {
   }
 
-  ngOnChanges(change: SimpleChanges) {
-    this.state = {}
-    this.list.forEach((key) => this.state[key] = false);
+  handleFilterUpdate(): void {
+    const reg = new RegExp(this.filterQuery, 'i');
+    this.keysToShow = Object.keys(this.state).filter(key => reg.test(key));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.list) {
+      this.state = {}
+      changes.list.currentValue.forEach((key) => this.state[key] = false);
+      this.keysToShow = Object.keys(this.state);
+    }
+  }
+
+  toggle() {
+    this.globalVal = !this.globalVal;
+    for (const key in this.state) {
+      this.state[key] = this.globalVal;
+    }
   }
 
   public getSelected(): string[] {

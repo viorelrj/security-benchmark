@@ -1,0 +1,51 @@
+@import '../../shared/styles/variables';
+
+.row {
+  flex-basis: calc(100% + #{$sp});
+  margin: 0 -#{$sp*.5};
+  display: flex;
+}
+
+.control {
+  margin: 0 $sp*.5;
+}
+
+.wrapper {
+  display: block;
+  border: 1px solid $color-blue-1;
+  border-radius: 2px;
+}
+
+.head {
+  display: flex;
+
+  padding: $sp;
+  background-color: $color-blue-05;
+  border-bottom: 1px solid $color-blue-1;
+}
+
+.checkbox-container {
+  max-height: $sp*24;
+  overflow-y: auto;
+  padding: $sp 0 $sp $sp;
+}
+
+.filter-control {
+  flex-basis: 100%;
+  
+  border: 1px solid $color-blue-1;
+  border-radius: $sp*.5;
+  width: 100%;
+
+  padding: 0 $sp;
+  height: $sp*3;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue-2;
+  }
+}
+
+app-checkbox {
+  margin-bottom: $sp;
+}
