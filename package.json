@@ -97,7 +97,10 @@
     "node": ">=10.13.0"
   },
   "dependencies": {
+    "child_process": "1.0.2",
+    "perl-regex": "1.0.4",
     "promisify": "0.0.3",
+    "sprintf-js": "1.1.2",
     "ts-promisify": "3.3.2"
   }
 }

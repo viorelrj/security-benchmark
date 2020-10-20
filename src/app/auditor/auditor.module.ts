@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PerlRegexService } from './services/perl-regex/perl-regex.service';
+import { AuditorService } from './auditor.service';
+
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule
   ],
-  providers: [PerlRegexService]
+  providers: [AuditorService]
 })
-export class CoreModule { }
+export class AuditorModule { }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileService } from '../shared/services/file.service';
-import { IPolicy, PolicyFormatterService } from './policy-formatter.service';
+import { PolicyFormatterService } from './policy-formatter.service';
+import { IPolicy } from '../core/interfaces/policy';
 
 import { ReadyState } from '../core/ready-state';
 
@@ -48,11 +49,14 @@ export class PoliciesService {
     return this.fileService.watchDirAll(this.baseDir);
   }
 
-  importAdaptedPolicy(content: IPolicy, selected: string[], name: string): void {
-    // console.log(content);
-    this.policyFormatterService.filter(content, selected).then(
-      // res => console.error(res)
+  importAdaptedPolicy(content: IPolicy, selected: string[], name: string): Promise<void> {
+    return this.policyFormatterService.filter(content, selected).then(
+      res => this.savePolicy(name, JSON.stringify(res))
     );
+  }
+
+  getLocalPolicy(name: string): Promise<IPolicy> {
+    return this.fileService.readFile(`${this.baseDir}/${name}`).then(res => JSON.parse(res));
   }
 
   getAdaptedPolicy(path: string): Promise<IPolicy> {

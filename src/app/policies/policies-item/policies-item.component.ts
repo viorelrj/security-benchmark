@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AuditorService } from 'app/auditor/auditor.service';
 import { PoliciesService } from '../policies.service';
 
 @Component({
@@ -10,7 +11,8 @@ export class PoliciesItemComponent implements OnInit {
   @Input() fileName: string;
 
   constructor(
-    private policiesService: PoliciesService
+    private policiesService: PoliciesService,
+    private auditorService: AuditorService
   ) { }
 
   handleRemove(): void {
@@ -19,6 +21,12 @@ export class PoliciesItemComponent implements OnInit {
     }
 
     this.policiesService.removePolicy(this.fileName);
+  }
+
+  handleExecute(): void {
+    this.policiesService.getLocalPolicy(this.fileName).then(
+      res => this.auditorService.audit(res)
+    );
   }
 
   ngOnInit(): void {

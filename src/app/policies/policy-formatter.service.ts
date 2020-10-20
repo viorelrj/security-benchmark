@@ -1,25 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { IPolicy, IPolicyNode, INessusItem } from '../core/interfaces/policy';
+
 const getTagName = (src: string): string => src.replace(/[<>:/]/g, ' ').trim().split(' ')[0];
 const parseAttribute = (src: string): string[] => src.replace(/[:]/g, '~').replace(/"/g, '').split('~');
-
-export interface IPolicy {
-  checks: {
-    [key: string]: INessusItem
-  },
-  structure: IPolicyNode[]
-}
-
-interface IPolicyNode {
-  tagName: string;
-  attributes?: { [key: string]: string };
-  content?: IPolicyNode[];
-  description?: string;
-}
-
-interface INessusItem {
-  [key: string]: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -60,9 +44,10 @@ class Interpreter {
       this.checks[key] = this.src.checks[key];
     }
 
-    console.log(this.shakeTree(this.src.structure[0]));
-
-    return this.src;
+    return {
+      checks: this.checks,
+      structure: [this.shakeTree(this.src.structure[0])]
+    };
   }
 
   private shakeTree(current: IPolicyNode): IPolicyNode|null {
@@ -145,7 +130,7 @@ class Parser {
     if (!firstEndTag) {
       return [];
     }
-    
+
     if (src[0] !== '<' && firstEndTag.index < (firstStartTag || {index: firstEndTag.index + 1}).index) {
       const rawContent = src.slice(0, firstEndTag.index);
       const content = this.parseCustomItem(rawContent);

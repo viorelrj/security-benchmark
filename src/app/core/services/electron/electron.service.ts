@@ -6,6 +6,7 @@ import { ReadyState } from '../../ready-state';
 import { ipcRenderer, webFrame, remote } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import * as sprintf from 'sprintf-js';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class ElectronService {
   webFrame: typeof webFrame;
   remote: typeof remote;
   childProcess: typeof childProcess;
+  sprintf: typeof sprintf.sprintf;
   fs: typeof fs;
   appDir: string
   state = new ReadyState();
@@ -38,6 +40,7 @@ export class ElectronService {
 
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
+      this.sprintf = window.require('sprintf-js').sprintf;
     }
   }
 }

@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UiModule } from '../ui/ui.module';
 
+import { AuditorService } from '../auditor/auditor.service';
+
 import { PoliciesRoutingModule } from './policies-routing.module';
 
 import { PoliciesComponent } from './policies.component';
@@ -18,6 +20,7 @@ import { PolicyImportComponent } from './policy-import/policy-import.component';
     PoliciesRoutingModule,
     UiModule,
     FormsModule
-  ]
+  ],
+  providers: [AuditorService]
 })
 export class PoliciesModule { }

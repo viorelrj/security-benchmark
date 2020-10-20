@@ -7,6 +7,13 @@
             <app-button
                 height="sm"
                 type="ghost"
+                (click)="handleExecute()"
+            >Execute</app-button>
+        </div>
+        <div class="control-wrapper">
+            <app-button
+                height="sm"
+                type="ghost"
                 color="danger"
                 (click)="handleRemove()"
             >Remove</app-button>

@@ -17,6 +17,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { HomeModule } from './home/home.module';
 import { PoliciesModule } from './policies/policies.module';
+import { AuditorModule } from './auditor/auditor.module';
 
 import { AppComponent } from './app.component';
 
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HomeModule,
     PoliciesModule,
     AppRoutingModule,
+    AuditorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

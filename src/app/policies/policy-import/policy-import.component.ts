@@ -4,7 +4,7 @@ import { CheckboxListComponent } from 'app/ui/checkbox-list/checkbox-list.compon
 import { IModalChildProps } from 'app/ui/modal/modal.service';
 import { IpcMain } from 'electron';
 import { PoliciesService } from '../policies.service';
-import { IPolicy } from '../policy-formatter.service';
+import { IPolicy } from '../../core/interfaces/policy';
 
 @Component({
   selector: 'app-policy-import',
