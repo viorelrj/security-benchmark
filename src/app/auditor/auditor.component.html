@@ -1,0 +1,8 @@
+<ul>
+    <li *ngFor="let key of keys">
+        <span
+            [ngClass]="{passed: !!items[key], failed: !items[key]}"
+        >{{items[key]? 'Passed' : 'Failed'}}</span>
+        {{key}}
+    </li>
+</ul>

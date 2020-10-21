@@ -110,7 +110,12 @@ class Parser {
       const trimQuotes = /^"+|"+$/g;
       const content = pair[0];
       const key = regKey.exec(content)[0];
-      const val = regVal.exec(content)[0].substring(1).trim().replace(trimQuotes, '');
+
+      let val = regVal.exec(content)[0].substring(1).trim()
+      if (trimQuotes.exec(val)) {
+        val = val.replace(/(\\{1,})/g, (item) => item.slice(0, item.length - 1));
+      }
+      val = val.replace(trimQuotes, '');
 
       ret[key] = val;
 

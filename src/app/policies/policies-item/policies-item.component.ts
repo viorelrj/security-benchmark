@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AuditorComponent } from 'app/auditor/auditor.component';
 import { AuditorService } from 'app/auditor/auditor.service';
+import { ModalService } from 'app/ui/modal/modal.service';
 import { PoliciesService } from '../policies.service';
 
 @Component({
@@ -12,7 +14,8 @@ export class PoliciesItemComponent implements OnInit {
 
   constructor(
     private policiesService: PoliciesService,
-    private auditorService: AuditorService
+    private auditorService: AuditorService,
+    private modalService: ModalService
   ) { }
 
   handleRemove(): void {
@@ -24,9 +27,9 @@ export class PoliciesItemComponent implements OnInit {
   }
 
   handleExecute(): void {
-    this.policiesService.getLocalPolicy(this.fileName).then(
-      res => this.auditorService.audit(res)
-    );
+    this.modalService.showModal(AuditorComponent, {
+      getResults: () => this.policiesService.getLocalPolicy(this.fileName).then(res => this.auditorService.audit(res))
+    });
   }
 
   ngOnInit(): void {

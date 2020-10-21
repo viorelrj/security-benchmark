@@ -1,0 +1,25 @@
+@import '../shared/styles/variables';
+
+.failed {
+    background-color: $color-red-1;
+}
+
+.passed {
+    background-color: $color-green-1;
+}
+
+span {
+    display: inline-block;
+    padding: 0 $sp;
+    border-radius: 2px;
+    flex-shrink: 0;
+
+    margin-right: $sp;
+}
+
+li {
+    display: flex;
+    align-items: flex-start;
+
+    margin-bottom: $sp;
+}
